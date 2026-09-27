@@ -1,0 +1,38 @@
+# docker-compose.yml - National Smart Energy Grid Intelligence Platform
+# Runs the REST API and the Executive Dashboard as two containers.
+#
+# Usage:
+#   docker-compose up --build
+#
+# Then open:
+#   API docs:  http://localhost:8000/docs
+#   Dashboard: http://localhost:8501
+
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart-grid-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    container_name: smart-grid-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    depends_on:
+      - api
+    restart: unless-stopped
